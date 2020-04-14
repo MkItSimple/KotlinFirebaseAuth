@@ -50,7 +50,7 @@
 
 
                     <TextView
-                        android:labelFor="@id/text_email"
+                        android:labelFor="@id/edit_text_email"
                         android:text="email"
                         android:fontFamily="sans-serif-light"
                         android:layout_width="wrap_content"

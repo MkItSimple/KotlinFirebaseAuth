@@ -4,8 +4,13 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Patterns
+import android.view.View
 import com.google.firebase.auth.FirebaseAuth
+import kotlinx.android.synthetic.main.activity_login.*
 import kotlinx.android.synthetic.main.activity_signup.*
+import kotlinx.android.synthetic.main.activity_signup.edit_text_email
+import kotlinx.android.synthetic.main.activity_signup.edit_text_password
+import kotlinx.android.synthetic.main.activity_signup.progressbar
 
 class SignupActivity : AppCompatActivity() {
 
@@ -48,19 +53,29 @@ class SignupActivity : AppCompatActivity() {
     }
 
     private fun registerUser(email: String, password: String) {
+        progressbar.visibility = View.VISIBLE
+
         mAuth.createUserWithEmailAndPassword(email, password)
             .addOnCompleteListener(this) { task ->
+                progressbar.visibility = View.GONE
                 if (task.isSuccessful){
-                    // Registration Success
-                    val intent = Intent(this@SignupActivity, HomeActivity::class.java).apply {
-                        flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                    }
-                    startActivity(intent)
+                    // Registration Success then login the user
+                    // Login  the user when registration success
+                    login()
                 }else{
                     task.exception?.message?.let {
                         toast(it)
                     }
                 }
             }
+    }
+
+    override fun onStart() {
+        super.onStart()
+
+        // If currentUser is not null means user already loggedin
+        mAuth.currentUser?.let {
+            login()
+        }
     }
 }
